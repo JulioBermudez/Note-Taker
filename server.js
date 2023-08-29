@@ -1,26 +1,43 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const path = require('path');//this isthe way to do a local on the html route, with this we can find the path of the files
 
-//Import the feedback api
-const api = require("./api/notes");
-const PORT = 3001;
+const api = require('./routes/index.js');
+
+const PORT = process.env.PORT || 3001;
+
 const app = express();
+//client -> middleware (pre-processing before give to the server app.use() -> server
+// Import custom middleware, "cLog"
 
-//Middleware for parsing JSON and urlencoded form Data
+
+// Middleware for parsing JSON and urlencoded form data
+//data parser in app.use to parse client data to req.body(original client data object)
 app.use(express.json());
-app.use(express.urlencoded({ extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
-//Middleware to serve up static assets from the public folder
-app.use(express.static("public"));
+//middleware to modular api routes
+//modulize: breakdown  api route in separate files
+//http:/localhost:3001/api  (this is api base)
+app.use('/api', api);
 
-//send all the request that begin with /api to the notes.js api folder
-app.use("/api", api);
+//middleware to make public the homepage url http://localhost:3001
+app.use(express.static('public'));
 
-//This view route is a GET route for the homepage
-app.get("/", (req,res) => res.sendFile(path.join(__dirname, "/public/index.html")));
+// GET Route for homepage
+app.get('/', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/index.html'))
+);
 
-//This view route is a GET route for the notes page
-app.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
+// GET Route for notes page
+app.get('/notes', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/notes.html'))
+);
 
-app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`));
+// Wildcard route to direct users to a index.html
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, 'public/index.html'))
+);
 
+app.listen(PORT, () =>
+  console.log(`App listening at http://localhost:${PORT}`)
+);
