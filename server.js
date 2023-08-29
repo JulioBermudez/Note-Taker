@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path');//this isthe way to do a local on the html route, with this we can find the path of the files
+const path = require('path');//this is the way to do a local on the html route, with this we can find the path of the files
 
 const api = require('./routes/index.js');
 
